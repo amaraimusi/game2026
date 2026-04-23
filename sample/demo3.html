@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Phaser demo2.png arrow key sample</title>
+	<script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js"></script>
+	<style>
+		body {
+			margin: 0;
+			background: #111;
+		}
+		canvas {
+			display: block;
+			margin: 0 auto;
+		}
+	</style>
+</head>
+<body>
+<script>
+class MainScene extends Phaser.Scene {
+	constructor() {
+		super({ key: 'MainScene' });
+
+		this.player = null;
+		this.cursors = null;
+		this.moveSpeed = 5;
+	}
+
+	preload() {
+		// index.html と同じ階層に demo2.png を置く
+		this.load.image('demo2', 'demo2.png');
+	}
+
+	create() {
+		const gameWidth = this.scale.width;
+		const gameHeight = this.scale.height;
+
+		// 画像を中央に表示
+		this.player = this.add.image(gameWidth / 2, gameHeight / 2, 'demo2');
+
+		// 大きすぎる場合は縮小
+		const maxSize = 256;
+		const scaleX = maxSize / this.player.width;
+		const scaleY = maxSize / this.player.height;
+		const scale = Math.min(scaleX, scaleY, 1);
+		this.player.setScale(scale);
+
+		// カーソルキーを取得
+		this.cursors = this.input.keyboard.createCursorKeys();
+	}
+
+	update() {
+		if (!this.player || !this.cursors) {
+			return;
+		}
+
+		let vx = 0;
+		let vy = 0;
+
+		if (this.cursors.left.isDown) {
+			vx = -this.moveSpeed;
+		}
+		else if (this.cursors.right.isDown) {
+			vx = this.moveSpeed;
+		}
+
+		if (this.cursors.up.isDown) {
+			vy = -this.moveSpeed;
+		}
+		else if (this.cursors.down.isDown) {
+			vy = this.moveSpeed;
+		}
+
+		this.player.x += vx;
+		this.player.y += vy;
+
+		// 画面外に出ないようにする
+		const halfW = this.player.displayWidth / 2;
+		const halfH = this.player.displayHeight / 2;
+		const gameWidth = this.scale.width;
+		const gameHeight = this.scale.height;
+
+		if (this.player.x < halfW) {
+			this.player.x = halfW;
+		}
+		if (this.player.x > gameWidth - halfW) {
+			this.player.x = gameWidth - halfW;
+		}
+		if (this.player.y < halfH) {
+			this.player.y = halfH;
+		}
+		if (this.player.y > gameHeight - halfH) {
+			this.player.y = gameHeight - halfH;
+		}
+	}
+}
+
+const config = {
+	type: Phaser.AUTO,
+	width: 1024,
+	height: 768,
+	backgroundColor: '#1d1d1d',
+	scene: [MainScene]
+};
+
+new Phaser.Game(config);
+</script>
+</body>
+</html>

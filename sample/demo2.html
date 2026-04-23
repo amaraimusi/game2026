@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Phaser demo2.png sample</title>
+	<script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js"></script>
+	<style>
+		body {
+			margin: 0;
+			background: #111;
+		}
+		canvas {
+			display: block;
+			margin: 0 auto;
+		}
+	</style>
+</head>
+<body>
+<script>
+class MainScene extends Phaser.Scene {
+	constructor() {
+		super({ key: 'MainScene' });
+
+		this.spriteImage = null;
+		this.vx = 3;
+		this.vy = 2;
+	}
+
+	preload() {
+		// demo2.png を読み込む
+		// index.html と同じ階層に置く場合
+		this.load.image('demo2', 'demo2.png');
+	}
+
+	create() {
+		const gameWidth = this.scale.width;
+		const gameHeight = this.scale.height;
+
+		// 画像を中央に表示
+		this.spriteImage = this.add.image(gameWidth / 2, gameHeight / 2, 'demo2');
+
+		// 大きすぎる場合に縮小
+		const maxSize = 256;
+		const scaleX = maxSize / this.spriteImage.width;
+		const scaleY = maxSize / this.spriteImage.height;
+		const scale = Math.min(scaleX, scaleY, 1);
+		this.spriteImage.setScale(scale);
+	}
+
+	update() {
+		if (!this.spriteImage) {
+			return;
+		}
+
+		this.spriteImage.x += this.vx;
+		this.spriteImage.y += this.vy;
+
+		const halfW = this.spriteImage.displayWidth / 2;
+		const halfH = this.spriteImage.displayHeight / 2;
+		const gameWidth = this.scale.width;
+		const gameHeight = this.scale.height;
+
+		// 画面端で反射
+		if (this.spriteImage.x <= halfW || this.spriteImage.x >= gameWidth - halfW) {
+			this.vx *= -1;
+		}
+
+		if (this.spriteImage.y <= halfH || this.spriteImage.y >= gameHeight - halfH) {
+			this.vy *= -1;
+		}
+	}
+}
+
+const config = {
+	type: Phaser.AUTO,
+	width: 1024,
+	height: 768,
+	backgroundColor: '#1d1d1d',
+	scene: [MainScene]
+};
+
+new Phaser.Game(config);
+</script>
+</body>
+</html>

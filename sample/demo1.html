@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Phaser Tween Sample</title>
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.js"></script>
+</head>
+<body>
+
+<script>
+const config = {
+  type: Phaser.AUTO,
+  width: 800,
+  height: 600,
+  backgroundColor: '#222',
+  scene: {
+    preload,
+    create
+  }
+};
+
+const game = new Phaser.Game(config);
+
+function preload() {
+  // 適当な画像（Phaser公式）
+  this.load.image('logo', 'https://labs.phaser.io/assets/sprites/phaser3-logo.png');
+}
+
+function create() {
+  const sprite = this.add.sprite(400, 300, 'logo');
+
+  // クリック可能にする
+  sprite.setInteractive();
+
+  sprite.on('pointerdown', () => {
+
+    // Tween発動
+    this.tweens.add({
+      targets: sprite,
+
+      // 移動
+      x: 600,
+
+      // 回転
+      angle: 360,
+
+      // 拡大
+      scale: 1.5,
+
+      // フェードアウト
+      alpha: 0,
+
+      duration: 1000,
+
+      ease: 'Power2',
+
+      // 戻る（往復）
+      yoyo: true,
+
+      // 1回繰り返し（往復で1セット）
+      repeat: 0,
+
+      onComplete: () => {
+        console.log('アニメーション終了');
+      }
+    });
+
+  });
+}
+</script>
+
+</body>
+</html>
